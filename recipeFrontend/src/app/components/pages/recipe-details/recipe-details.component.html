@@ -1,0 +1,61 @@
+<section class="section container">
+  <div class="section-header">
+    <h1 *ngIf="!isLoading">{{ recipe.name }}</h1>
+    <button [routerLink]="['/edit-recipe', recipeId]" class="btn btn-success float-right ml-auto">
+      <span class="fas fa-edit"></span> Edit
+    </button>
+    <button [routerLink]="['/']" class="btn btn-info float-right overview-button">
+      <span class="fas fa-arrow-left" aria-hidden="true"></span> Back to overview
+    </button>
+  </div>
+
+  <div *ngIf="!isLoading" class="section-body">
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h4>Information</h4>
+          </div>
+          <div class="row card-body">
+            <div class="col-lg-3"><b>Category: </b> {{ CategoryType[recipe.category] | titlecase }}</div>
+            <div class="col-lg-3"><b>Difficulty: </b> {{ DifficultyType[recipe.difficulty] | titlecase }}</div>
+            <div class="col-lg-3"><b>Duration: </b> {{ recipe.duration }} minutes</div>
+            <div class="col-lg-3"><b>Rating: </b> <rating [(ngModel)]="recipe.rating" [readonly]="true" [max]="5"></rating></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h4>Ingredients</h4>
+          </div>
+          <div class="card-body row d-flex">
+            <div class="col-lg-3 mb-3" *ngFor="let ingredient of recipe.ingredients">
+              <span class="ingredient-name">{{ ingredient.ingredient.name }}</span> {{ ingredient.quantity }} {{ MeasurementType[ingredient.measurementType] | lowercase }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h4>Directions</h4> <i (click)="openDirectionsModal()" class="fas fa-expand-arrows-alt expand-logo cursor-pointer ml-auto float-right"></i>
+          </div>
+          <div class="card-body">
+            <div class="row mb-3" *ngFor="let direction of recipe.directions">
+              <div class="col-1"><span class="badge badge-info">{{ direction.index }}</span></div>
+              <div class="col-11">{{ direction.description }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<app-loader [loading]="isLoading"></app-loader>

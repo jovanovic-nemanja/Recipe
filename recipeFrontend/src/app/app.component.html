@@ -1,0 +1,13 @@
+<ng-container *ngIf="isLoggedIn() else loadingPage">
+  <app-menu></app-menu>
+
+  <div class="main-content">
+    <router-outlet></router-outlet>
+  </div>
+</ng-container>
+<ng-template #loadingPage>
+  <div class="loader-background position-fixed d-flex float-left">
+    <div class="loader m-auto">
+    </div>
+  </div>
+</ng-template>

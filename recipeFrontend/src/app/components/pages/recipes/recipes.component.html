@@ -1,0 +1,30 @@
+<section class="section container">
+  <div class="section-header">
+    <h1>{{ showPublic ? 'All Recipes' : 'My Recipes' }}</h1>
+    <button [routerLink]="['edit-recipe']" class="btn btn-success float-right ml-auto">
+      <span class="fas fa-plus" aria-hidden="true"></span> Add Recipe
+    </button>
+  </div>
+
+  <div class="section-body" *ngIf="!isLoading">
+    <app-loader [loading]="isLoading"></app-loader>
+    <div class="d-flex flex-row flex-wrap justify-content-center row">
+      <div
+        *ngFor="let recipe of recipes"
+        class="card text-center" [routerLink]="['recipe',recipe.id]">
+        <div class="card-body">
+          <h5 class="card-title">{{ recipe.name }}</h5>
+          <h6 class="card-subtitle mb-2 text-muted">{{ CategoryType[recipe.category] | titlecase }}</h6>
+          <div class="card-text">
+            <b>Time: </b> {{ recipe.duration }} mins<br>
+            <b>Difficulty: </b> {{ DifficultyType[recipe.difficulty] | titlecase }}<br>
+            <b>Rating: </b> <rating [max]="5" [(ngModel)]="recipe.rating" [readonly]="true"></rating>
+          </div>
+        </div>
+      </div>
+    </div>
+    <pagination [totalItems]="totalItems" [itemsPerPage]="itemsPerPage" (pageChanged)="changePage($event)"></pagination>
+
+  </div>
+  <app-loader [loading]="isLoading"></app-loader>
+</section>

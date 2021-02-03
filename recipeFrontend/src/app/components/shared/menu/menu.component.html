@@ -1,0 +1,31 @@
+<div class="navbar-bg"></div>
+<nav class="navbar navbar-expand-lg main-navbar">
+  <a routerLink="/" class="navbar-brand sidebar-gone-hide">Recipely</a>
+  <div class="nav-collapse">
+    <a class="sidebar-gone-show nav-collapse-toggle nav-link cursor-pointer" href>
+      <i class="fas fa-bars"></i>
+    </a>
+    <ul class="navbar-nav">
+      <li [routerLink]="['/', 'recipes']" routerLinkActive="active" class="nav-item cursor-pointer"><a class="nav-link">All Recipes</a></li>
+      <li [routerLink]="['/', 'my-recipes']" routerLinkActive="active" class="nav-item cursor-pointer"><a class="nav-link">My Recipes</a></li>
+<!--      <li routerLink="/" routerLinkActive="active" class="nav-item"><a href="#" class="nav-link">Ingredients</a></li>-->
+<!--      <li class="nav-item"><a href="#" class="nav-link">Stock</a></li>-->
+    </ul>
+  </div>
+  <div class="navbar-right ml-auto d-flex flex-row mr-4">
+    <app-search></app-search>
+    <ul class="mt-auto mb-auto">
+      <li class="dropdown"><a href data-toggle="dropdown"
+                              class="nav-link dropdown-toggle nav-link-lg nav-link-user">
+        <img alt="image" src="../assets/img/avatar/avatar-1.png" class="rounded-circle mr-1">
+        <div class="d-sm-none d-lg-inline-block">Hi, {{ username }}</div>
+      </a>
+        <div class="dropdown-menu dropdown-menu-right">
+          <a (click)="logout()" class="dropdown-item has-icon text-danger cursor-pointer">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </a>
+        </div>
+      </li>
+    </ul>
+  </div>
+</nav>

@@ -1,0 +1,44 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~@ng-select/ng-select/themes/default.theme.css";
+
+.border-radius-unset {
+  border-radius: unset !important;
+}
+
+.pagination {
+  justify-content: center;
+}
+
+::-moz-selection { /* Code for Firefox */
+  color: #FFFFFF;
+  background: #38d368;
+}
+
+::selection {
+  color: #FFFFFF;
+  background: #38d368;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.carousel-control-next-icon {
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='000000' viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E") !important;
+  cursor: pointer;
+}
+
+.carousel-control-prev-icon {
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='000000' viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E");
+  cursor: pointer;
+}
+
+.carousel-indicators li {
+  background-color: #9aa0ac;
+  cursor: pointer;
+}
+
+.carousel-indicators .active {
+  background-color: #6e7687;
+  cursor: pointer;
+}

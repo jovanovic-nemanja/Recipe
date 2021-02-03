@@ -1,0 +1,13 @@
+.ingredient-name {
+  font-weight: bold;
+}
+
+@media screen and (min-width: 575px) {
+  .overview-button {
+    margin-left: .5rem!important;
+  }
+}
+
+.expand-logo {
+  font-size: 20px;
+}

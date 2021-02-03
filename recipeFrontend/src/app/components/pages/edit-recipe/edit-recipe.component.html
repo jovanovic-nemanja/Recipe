@@ -1,0 +1,239 @@
+<section class="section container">
+  <div class="section-header">
+    <h1 *ngIf="isNew else editRecipe">Add recipe</h1>
+    <ng-template #editRecipe>
+      <h1>Edit recipe</h1>
+    </ng-template>
+    <button *ngIf="isNew else existsButtons" [routerLink]="['']" class="btn btn-info float-right ml-auto">
+      <span class="fas fa-arrow-left" aria-hidden="true"></span> Back to Recipes
+    </button>
+    <ng-template #existsButtons>
+<!--      <button (click)="deleteRecipe()" class="btn btn-danger float-right ml-auto">-->
+<!--        <span class="fas fa-trash"></span> Delete-->
+<!--      </button>-->
+      <button [routerLink]="['/recipe', recipeId]" class="btn btn-info float-right ml-auto">
+        <span class="fas fa-arrow-left" aria-hidden="true"></span> Back to Recipe
+      </button>
+    </ng-template>
+  </div>
+
+  <app-loader [loading]="isLoading"></app-loader>
+  <div *ngIf="!isLoading" class="section-body">
+    <div class="card">
+      <div class="card-header">
+        <h4>Create New Recipe</h4>
+      </div>
+      <div class="card-body">
+        <div class="row mt-4">
+          <div class="col-12 col-lg-8 offset-lg-2">
+            <div class="wizard-steps">
+              <div class="wizard-step" [class.wizard-step-info]="currentStep == 1">
+                <div class="wizard-step-icon">
+                  <i class="fas fa-utensils"></i>
+                </div>
+                <div class="wizard-step-label">
+                  Information
+                </div>
+              </div>
+              <div class="wizard-step" [class.wizard-step-info]="currentStep == 2">
+                <div class="wizard-step-icon">
+                  <i class="fas fa-box-open"></i>
+                </div>
+                <div class="wizard-step-label">
+                  Ingredients
+                </div>
+              </div>
+              <div class="wizard-step" [class.wizard-step-info]="currentStep == 3">
+                <div class="wizard-step-icon">
+                  <i class="fas fa-list"></i>
+                </div>
+                <div class="wizard-step-label">
+                  Directions
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <form class="wizard-content mt-2" *ngIf="currentStep == 1">
+          <div class="wizard-pane">
+            <div class="form-group row align-items-center">
+              <label class="col-md-4 text-md-right text-left">Name</label>
+              <div class="col-lg-4 col-md-6">
+                <input type="text" [(ngModel)]="recipe.name" name="name" class="form-control">
+                <span *ngIf="validations.name" class="text-danger">Name is required</span>
+              </div>
+            </div>
+            <div class="form-group row align-items-center">
+              <label class="col-md-4 text-md-right text-left">Category</label>
+              <div class="col-lg-4 col-md-6">
+                <ng-select [items]="categories" bindLabel="name" bindValue="value"
+                           [(ngModel)]="recipe.category" name="category">
+                  <option>Breakfast</option>
+                  <option>Dinner</option>
+                  <option>Snacks</option>
+                  <option>Drinks</option>
+                  <option>Desserts</option>
+                </ng-select>
+                <span *ngIf="validations.category" class="text-danger">Category is required</span>
+              </div>
+            </div>
+            <div class="form-group row align-items-center">
+              <label class="col-md-4 text-md-right text-left">Difficulty</label>
+              <div class="col-lg-4 col-md-6">
+                <ng-select [items]="difficulties" bindLabel="name" bindValue="value"
+                           [(ngModel)]="recipe.difficulty" name="difficulty">
+                </ng-select>
+                <span *ngIf="validations.difficulty" class="text-danger">Difficulty is required</span>
+              </div>
+            </div>
+            <div class="form-group row align-items-center">
+              <label class="col-md-4 text-md-right text-left">Rating</label>
+              <div class="col-lg-4 col-md-6">
+                <rating [(ngModel)]="recipe.rating" name="rating" [max]="5" [readonly]="false"
+                        [titles]="['one','two','three','four','five']"></rating>
+                <span *ngIf="validations.rating" class="text-danger">Rating is required</span>
+              </div>
+            </div>
+            <div class="form-group row align-items-center">
+              <label class="col-md-4 text-md-right text-left">Duration</label>
+              <div class="col-lg-4 col-md-6">
+                <timepicker [(ngModel)]="durationToAdd" name="duration" hoursPlaceholder="H" minutesPlaceholder="M"
+                            minuteStep="5" hourStep="1" [showMinutes]="true" [showSeconds]="false"
+                            [showMeridian]="false"></timepicker>
+                <span *ngIf="validations.duration" class="text-danger">Duration is required</span>
+              </div>
+            </div>
+            <div class="form-group row align-items-center">
+              <label class="col-md-4 text-md-right text-left">Visibility</label>
+              <div class="col-lg-4 col-md-6">
+                <div class="custom-control custom-radio">
+                  <input [value]="false" [(ngModel)]="recipe.isPublic" type="radio" id="visibility1" name="visibility" class="custom-control-input">
+                  <label class="custom-control-label" for="visibility1">Private</label>
+                </div>
+                <div class="custom-control custom-radio">
+                  <input [value]="true" [(ngModel)]="recipe.isPublic" type="radio" id="visibility2" name="visibility" class="custom-control-input">
+                  <label class="custom-control-label" for="visibility2">Public</label>
+                </div>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-4"></div>
+              <div class="col-lg-4 col-md-6 text-right">
+                <button (click)="nextStep()" class="btn btn-icon icon-right btn-info">Next <i
+                  class="fas fa-arrow-right"></i></button>
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <form class="wizard-content mt-2" *ngIf="currentStep == 2">
+          <div class="wizard-pane">
+            <div class="mb-5">
+              <div *ngIf="recipe.ingredients.length < 1 else ingredientHeaders"
+                   class="row align-items-center justify-content-md-center mt-2">
+                No ingredients have been added yet
+              </div>
+              <div *ngIf="validations.ingredients"
+                   class="row align-items-center justify-content-md-center mt-2 text-danger">
+                Ingredients are required
+              </div>
+              <ng-template #ingredientHeaders>
+                <div class="row align-items-center justify-content-md-center font-weight-bold">
+                  <div class="col-md-2 col-12">Ingredient name</div>
+                  <div class="col-md-1 col-12">Quantity</div>
+                  <div class="col-md-2 col-12">Measurement type</div>
+                  <div class="col-md-1 col-12">Action</div>
+                </div>
+              </ng-template>
+              <div class="row align-items-center justify-content-md-center"
+                   *ngFor="let ingredient of recipe.ingredients">
+                <div class="col-md-2 col-12">{{ingredient.ingredient.name}}</div>
+                <div class="col-md-1 col-12">{{ingredient.quantity}}</div>
+                <div class="col-md-2 col-12">{{measurementTypes[ingredient.measurementType-1].name}}</div>
+                <div class="col-md-1 col-12" (click)="deleteIngredient(ingredient.ingredient.name)"><i class="fas fa-trash btn"></i></div>
+              </div>
+            </div>
+            <div class="form-group row align-items-center justify-content-md-center">
+              <div class="col-lg-3 col-md-6">
+                <input placeholder="Ingredient name"
+                       name="ingredientName"
+                       class="form-control"
+                       [typeahead]="ingredients"
+                       typeaheadOptionField="name"
+                       [(ngModel)]="ingredientToAdd.ingredient.name"
+                       autocomplete="off">
+              </div>
+              <div class="col-lg-2 col-md-2">
+                <input type="number" [(ngModel)]="ingredientToAdd.quantity" name="ingredientQuantity"
+                       class="form-control" placeholder="Quantity">
+              </div>
+              <div class="col-lg-3 col-md-2">
+                <ng-select [items]="measurementTypes"
+                           name="measurementType"
+                           bindValue="value"
+                           bindLabel="name"
+                           placeholder="Measurement type"
+                           [(ngModel)]="ingredientToAdd.measurementType"></ng-select>
+              </div>
+              <div class="col-lg-2 col-md-2">
+                <button class="btn btn-success" (click)="addIngredient()"><i class="fas fa-plus"></i> Add ingredient
+                </button>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-4"></div>
+              <div class="col-lg-4 col-md-6 text-right">
+                <button (click)="previousStep()" class="btn btn-icon icon-right btn-light mr-2"><i
+                  class="fas fa-arrow-left"></i> Previous
+                </button>
+                <button (click)="nextStep()" class="btn btn-icon icon-right btn-info">Next <i
+                  class="fas fa-arrow-right"></i></button>
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <form class="wizard-content mt-2" *ngIf="currentStep == 3">
+          <div class="wizard-pane">
+            <div class="mb-5">
+              <div *ngIf="recipe.directions.length < 1" class="row align-items-center justify-content-md-center mt-2">No steps have been added yet</div>
+              <div *ngIf="validations.directions" class="row align-items-center justify-content-md-center mt-2 text-danger">Directions are required</div>
+              <bs-sortable #sortableComponent
+                           [itemTemplate]="directionItem"
+                           [(ngModel)]="recipe.directions"
+                           name="directions"
+              itemClass="sortable-item"
+              itemActiveClass="sortable-item-active"></bs-sortable>
+              <ng-template #directionItem let-item="item" let-index="index">
+                <div class="row align-items-center justify-content-md-center mb-1">
+                  <div class="col-lg-1"><span class="badge badge-info">{{index + 1}}.</span></div>
+                  <div class="col-lg-4 direction-step">{{item.value.description}}</div>
+                  <div class="col-lg-1"><i (click)="deleteDirection(item.value.description)" class="btn fas fa-trash"></i></div>
+                </div>
+              </ng-template>
+            </div>
+            <div class="form-group row align-items-center justify-content-md-center">
+              <div class="col-lg-4">
+                <textarea class="form-control direction-input" rows="10" name="directionStep" placeholder="Enter step details" [(ngModel)]="directionToAdd"></textarea>
+              </div>
+              <div class="col-lg-1">
+                <button class="btn btn-success" (click)="addDirectionStep()"><i class="fas fa-plus"></i> Add step</button>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-4"></div>
+              <div class="col-lg-4 col-md-6 text-right">
+                <button (click)="previousStep()" class="btn btn-icon icon-right btn-light mr-2"><i
+                  class="fas fa-arrow-left"></i> Previous
+                </button>
+                <button *ngIf="currentStep == 3" (click)="finishRecipe()" class="btn btn-icon icon-right btn-success"><i class="fas fa-save"></i>
+                  Save recipe
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
